@@ -12,4 +12,7 @@ public class TelegramBotCommandStrategyCreator {
     public static TelegramBotCommandStrategy create(String message) {
         return commandStrategies.getOrDefault(message, new TelegramBotUndefinedCommandStrategy());
     }
+    public static void register(String message, TelegramBotCommandStrategy strategy) {
+        commandStrategies.put(message, strategy);
+    }
 }
