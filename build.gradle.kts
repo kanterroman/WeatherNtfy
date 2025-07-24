@@ -27,6 +27,8 @@ dependencies {
 	implementation("org.telegram:telegrambots-springboot-longpolling-starter:9.0.0")
 	implementation("org.telegram:telegrambots-client:9.0.0")
 	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	testImplementation("io.projectreactor:reactor-test")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
