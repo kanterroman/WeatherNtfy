@@ -72,8 +72,10 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
         SendMessage message = SendMessage
                 .builder()
                 .chatId(update.getMessage().getChatId())
-                .text("Привет! Я бот, который предназначен для демонстрации текущей погоды!" +
-                        "Напиши /forecast город, чтобы получить прогноз на сегодня!")
+                .text("""
+                        Привет! Я бот, который предназначен для демонстрации текущей погоды и прогноза на день!"
+                        "Напиши /forecast имя_города (Например, /forecast Нижний Новгород), чтобы получить прогноз на сегодня!
+                        """)
                 .build();
         telegramClient.execute(message);
     }
@@ -86,9 +88,9 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 1; i < command.length; i++) {
-                sb.append(command[i]);
+                sb.append(command[i]).append(" ");
             }
-            String city = sb.toString();
+            String city = sb.toString().trim();
             try {
                 var forecastData = weatherClient.getWeatherForecast(city).block();
                 if (forecastData == null) {
@@ -99,15 +101,17 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
                     messageText = String.format("""
                                     Город: %s
                                     Дата: %s
-                                    Температура от %sºC до %sºC, \
+                                    Сейчас %s, температура %sºC
+                                    Температура от %sºC до %sºC
                                     Средняя: %sºC
-                                    Ветер до %s км/ч
+                                    Ветер до %s м/с
                                     Вероятность дождя: %s %%""",
-                            city, forecastData.forecast().forecastDay().getFirst().date(),
+                            forecastData.location().name(), forecastData.forecast().forecastDay().getFirst().date(),
+                            forecastData.current().condition().condition(), forecastData.current().tempCel(),
                             forecastData.forecast().forecastDay().getFirst().day().mintempCel(),
                             forecastData.forecast().forecastDay().getFirst().day().maxtempCel(),
                             forecastData.forecast().forecastDay().getFirst().day().avgtempCel(),
-                            forecastData.forecast().forecastDay().getFirst().day().maxWindKilPerHour(),
+                            Math.round(forecastData.forecast().forecastDay().getFirst().day().maxWindKilPerHour() / 3.6),
                             forecastData.forecast().forecastDay().getFirst().day().chanceOfRain());
                 }
             } catch (WebClientResponseException e) {
@@ -127,15 +131,6 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
                 .builder()
                 .chatId(update.getMessage().getChatId())
                 .text("Неизвестная команда, пожалуйста, выберите одну из доступных команд.")
-                .build();
-        telegramClient.execute(message);
-    }
-
-    private void wrongCityPassed(Update update) throws TelegramApiException {
-        SendMessage message = SendMessage
-                .builder()
-                .chatId(update.getMessage().getChatId())
-                .text("Передайте")
                 .build();
         telegramClient.execute(message);
     }

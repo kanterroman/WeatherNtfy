@@ -29,6 +29,7 @@ public class WeatherAPIClient {
                         .path("/forecast.json")
                         .queryParam("key", weatherAPIConfig.getApiKey())
                         .queryParam("q", city)
+                        .queryParam("lang", "ru")
                         .build())
                 .retrieve()
                 .bodyToMono(WeatherForecast.class);
