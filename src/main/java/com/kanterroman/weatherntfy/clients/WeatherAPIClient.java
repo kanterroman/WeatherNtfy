@@ -1,12 +1,14 @@
 package com.kanterroman.weatherntfy.clients;
 
+import com.kanterroman.weatherntfy.clients.dto.WeatherForecast;
 import com.kanterroman.weatherntfy.config.WeatherAPIConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-@Service
+@Controller
 public class WeatherAPIClient {
     private final WebClient webClient;
     private final WeatherAPIConfig weatherAPIConfig;
@@ -15,12 +17,12 @@ public class WeatherAPIClient {
     public WeatherAPIClient(WeatherAPIConfig weatherAPIConfig) {
         webClient = WebClient
                 .builder()
-                .baseUrl("http://api.weatherapi.com/v1")
+                .baseUrl("https://api.weatherapi.com/v1")
                 .build();
         this.weatherAPIConfig = weatherAPIConfig;
     }
 
-    public Mono<String> getWeatherForecast(String city) {
+    public Mono<WeatherForecast> getWeatherForecast(String city) {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -29,6 +31,6 @@ public class WeatherAPIClient {
                         .queryParam("q", city)
                         .build())
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(WeatherForecast.class);
     }
 }
