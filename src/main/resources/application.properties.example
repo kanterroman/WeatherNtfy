@@ -1,4 +1,4 @@
 spring.application.name=WeatherNtfy
 bot.name=BOT_NAME
 bot.token=BOT_TOKEN
-api.key=API_KEY
+api.key=WEATHER_API_KEY
