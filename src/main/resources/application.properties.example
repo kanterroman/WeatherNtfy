@@ -1,0 +1,4 @@
+spring.application.name=WeatherNtfy
+bot.name=BOT_NAME
+bot.token=BOT_TOKEN
+api.key=WEATHER_API_KEY
